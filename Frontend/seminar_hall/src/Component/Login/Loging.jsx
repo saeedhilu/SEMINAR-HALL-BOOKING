@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import instance from '../Axios';
 
-const Login = () => {
+const Login = ({onSuccess}) => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -19,7 +19,7 @@ const Login = () => {
             const response = await instance.post('login/', formData);
             
             if (response.status === 200) {
-                navigate('/');
+                onSuccess();
             }
         } catch (error) {
             if (error.response && error.response.data) {

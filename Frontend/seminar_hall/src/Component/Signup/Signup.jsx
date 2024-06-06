@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import instance from '../Axios';
 
 const Signup = () => {
@@ -23,7 +22,7 @@ const Signup = () => {
             console.log('====================================');}
             
             if (response.status === 201) {
-                navigate('/');
+                navigate('/login');
             }
         } catch (error) {
             if (error.response && error.response.data) {

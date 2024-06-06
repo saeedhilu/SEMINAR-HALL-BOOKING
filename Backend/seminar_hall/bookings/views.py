@@ -5,6 +5,7 @@ from .serializers import BookingSerializer, SeatSerializer
 
 class SeatListCreate(generics.ListCreateAPIView):
     queryset = Seat.objects.all()
+    print('query set is ',queryset)
     serializer_class = SeatSerializer
 
 class BookingListCreate(generics.ListCreateAPIView):

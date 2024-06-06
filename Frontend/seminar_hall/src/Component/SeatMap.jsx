@@ -8,10 +8,13 @@ export const SeatMap = () => {
   const [selectedSeats, setSelectedSeats] = useState([]);
   const fetchSeats = async () => {
     try {
-      const response = await instance.post("seats/");
+      const response = await instance.get("seats/");
+      {console.log('====================================');
+      console.log('response is :./////////////////////',response);
+      console.log('====================================');}
       setSeats(response.data);
     } catch (error) {
-      console.log(error);
+      console.log('caghted error is ',error);
     }
   };
 
@@ -24,7 +27,7 @@ export const SeatMap = () => {
   }
   const handleBookingSubmit = (booking) =>{
     setSeats(seats.map(seat => seat.id === booking.seat.id ? {...seat, is_booked:true}:seat))
-    setSelectedSeats(null)
+    setSelectedSeats([])
   }
 
   return (
@@ -36,3 +39,5 @@ export const SeatMap = () => {
     </div>
   );
 };
+
+export default SeatMap;
