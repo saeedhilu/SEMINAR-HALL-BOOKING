@@ -1,1 +1,7 @@
-"# SEMINAR-HALL-BOOKING" 
+"# SEMINAR-HALL-BOOKING
+
+#backend :
+Using python drf
+
+
+" 
