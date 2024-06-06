@@ -1,41 +1,47 @@
-import React, { useState, useEffect } from "react";
-import instance from './Axios'
-import Seat from './Seat'
-import BookingForm from "./BookingForm";
+import React, { useState, useEffect } from 'react';
+import instance from './Axios';
+import Seat from './Seat';
+import BookingForm from './BookingForm';
 
-export const SeatMap = () => {
+const SeatMap = () => {
   const [seats, setSeats] = useState([]);
-  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [selectedSeat, setSelectedSeat] = useState(null);
+
+  useEffect(() => {
+    fetchSeats();
+  }, []);
+
   const fetchSeats = async () => {
     try {
-      const response = await instance.get("seats/");
-      {console.log('====================================');
-      console.log('response is :./////////////////////',response);
-      console.log('====================================');}
+      const response = await instance.get('seats/');
       setSeats(response.data);
     } catch (error) {
-      console.log('caghted error is ',error);
+      console.error('Error fetching seats:', error);
     }
   };
 
-  
-  useEffect(() => {
-    fetchSeats();
-  },[]);
-  const handleSeatClick = (seat)=>{
-    setSelectedSeats(seat)
-  }
-  const handleBookingSubmit = (booking) =>{
-    setSeats(seats.map(seat => seat.id === booking.seat.id ? {...seat, is_booked:true}:seat))
-    setSelectedSeats([])
-  }
+  const handleSeatClick = (seat) => {
+    if (!seat.is_booked) {
+      setSelectedSeat(seat);
+    }
+  };
+
+  const handleBookingSubmit = (booking) => {
+    setSeats((prevSeats) =>
+      prevSeats.map((seat) => (seat.id === booking.seat.id ? { ...seat, is_booked: true } : seat))
+    );
+    setSelectedSeat(null);
+  };
 
   return (
-    <div className="set-map">
-        {seats.map(seat =>(
-            <Seat key={seat.id} seat={seat} onClick={() => handleSeatClick(seat)} />
+    <div className="seat-map p-4">
+      <h1 className="text-2xl font-bold mb-4">Seat Map</h1>
+      <div className="grid grid-cols-4 gap-4">
+        {seats.map((seat) => (
+          <Seat key={seat.id} seat={seat} onClick={() => handleSeatClick(seat)} />
         ))}
-        {selectedSeats && <BookingForm seat={selectedSeats} onSubmit={handleBookingSubmit} />}
+      </div>
+      {selectedSeat && <BookingForm seat={selectedSeat} onSubmit={handleBookingSubmit} />}
     </div>
   );
 };

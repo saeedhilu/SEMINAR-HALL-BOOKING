@@ -1,19 +1,22 @@
-import React from 'react'
+import React from 'react';
 
-export const Seat = ({seat,onclick}) => {
-    const handleClick= () =>{
-        if (! seat.is_booked){
-            onclick(seat)
-        }
+const Seat = ({ seat, onClick }) => {
+  const handleClick = () => {
+    if (!seat.is_booked) {
+      onClick(seat);
     }
-    {console.log('====================================');
-    console.log('seat number is ',seat.seat_number);
-    console.log('====================================');}
+  };
+
   return (
-    <div className={`seat ${seat.is_booked ? 'booked' : ''}`} onClick={handleClick}>
-        {seat.seat_number}
+    <div
+      className={`seat p-4 text-center border rounded cursor-pointer ${
+        seat.is_booked ? 'bg-red-500' : 'bg-green-500'
+      }`}
+      onClick={handleClick}
+    >
+      {seat.seat_number}
     </div>
-  )
-}
+  );
+};
 
 export default Seat;
