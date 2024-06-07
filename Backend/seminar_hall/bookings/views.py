@@ -1,35 +1,45 @@
-from rest_framework import generics, permissions
-from rest_framework.exceptions import ValidationError
-from .models import Booking, Seat
-from .serializers import BookingSerializer, SeatSerializer
-
-class SeatListCreate(generics.ListCreateAPIView):
-    queryset = Seat.objects.all()
-    print('query set is ',queryset)
-    serializer_class = SeatSerializer
-
-class BookingListCreate(generics.ListCreateAPIView):
-    queryset = Booking.objects.all()
-    serializer_class = BookingSerializer
-    
-    def perform_create(self, serializer):
-        if not self.request.user.is_authenticated:
-            raise ValidationError("You need to log in to book a seat.")
-        
-        if Booking.objects.filter(date=serializer.validated_data['date'], seat=serializer.validated_data['seat']).exists():
-            raise ValidationError("This seat is already booked for the selected date.")
-        
-        seat = serializer.validated_data['seat']
-        seat.is_booked = True
-        seat.save()
-        serializer.save(user=self.request.user)
-from rest_framework import generics, status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from .serializers import UserSignupSerializer, UserLoginSerializer
 from django.contrib.auth import get_user_model
 
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import generics, permissions, status
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework.exceptions import ValidationError
+
+
+
+from .models import Booking, Seat
+from .serializers import BookingSerializer, SeatSerializer, UserSignupSerializer, UserLoginSerializer
+
+
 User = get_user_model()
+
+class JWTAuthenticationMixin:
+
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+class SeatListCreate(generics.ListCreateAPIView):
+    print('hello')
+    queryset = Seat.objects.all()
+    print('query sets is :',queryset)
+    serializer_class = SeatSerializer
+
+class BookingListCreate(generics.GenericAPIView  , JWTAuthenticationMixin):
+    print('hey  ')
+    queryset = Booking.objects.all()
+    print("queryset for boooiuibng",queryset)
+    serializer_class = BookingSerializer
+
+    def post(self,request):
+        print(request.data)
+        serializer = BookingSerializer(data=request.data,context={'request':request})
+        print(serializer)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class UserSignupView(generics.CreateAPIView):
     serializer_class = UserSignupSerializer
@@ -42,9 +52,14 @@ class UserSignupView(generics.CreateAPIView):
 
 class UserLoginView(APIView):
     def post(self, request):
+        print('statrt')
         serializer = UserLoginSerializer(data=request.data)
+        print('serialziser is :',serializer)
         serializer.is_valid(raise_exception=True)
 
         user = serializer.validated_data['user']
-
-        return Response({"message": "Login successful!"}, status=status.HTTP_200_OK)
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        })

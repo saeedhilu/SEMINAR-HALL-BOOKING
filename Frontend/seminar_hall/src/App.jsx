@@ -1,22 +1,23 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Signup from './Component/Signup/Signup';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './Component/Login/Loging';
+import Signup from './Component/Signup/Signup';
 import SeatMap from './Component/SeatMap';
 
-function App() {
-  const [isSignedUp, setIsSignedUp] = useState(false);
 
+
+function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Navigate to="/signup" />} />
-        <Route path="/signup" element={<Signup onSuccess={() => setIsSignedUp(true)} />} />
-        <Route path="/login" element={!isSignedUp ? <Login onSuccess={() => setIsSignedUp(true)} /> : <Navigate to="/seatmap" />} />
-        <Route path="/seatmap" element={isSignedUp ? <SeatMap /> : <Navigate to="/signup" />} />
-      </Routes>
+      <div className="App">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/seats" element={<SeatMap />} />
+        </Routes>
+      </div>
     </Router>
-  )
+  );
 }
 
 export default App;

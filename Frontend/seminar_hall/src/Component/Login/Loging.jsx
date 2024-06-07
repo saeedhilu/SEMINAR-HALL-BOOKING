@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import instance from '../Axios';
 
-const Login = ({onSuccess}) => {
+const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -17,9 +17,10 @@ const Login = ({onSuccess}) => {
         
         try {
             const response = await instance.post('login/', formData);
-            
             if (response.status === 200) {
-                onSuccess();
+                const { access } = response.data;
+                localStorage.setItem('token', access);
+                navigate('/seats');
             }
         } catch (error) {
             if (error.response && error.response.data) {
@@ -31,7 +32,7 @@ const Login = ({onSuccess}) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <form onSubmit={handleSubmit} className="login-form">
             <h1 className="text-2xl font-bold mb-6 text-center">Sign in</h1>
             {error && <p className="text-red-500 text-center mb-4">{error}</p>}
             <div className="mb-4">
@@ -60,7 +61,7 @@ const Login = ({onSuccess}) => {
             </div>
             <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Sign In</button>
             <div className="text-center mt-4">
-                <button onClick={() => navigate('/signup')} className="bg-white text-blue-500 px-4 py-2 rounded-full mr-2">Sign Up</button>
+                <button type="button" onClick={() => navigate('/signup')} className="bg-white text-blue-500 px-4 py-2 rounded-full mr-2">Sign Up</button>
             </div>
         </form>
     );

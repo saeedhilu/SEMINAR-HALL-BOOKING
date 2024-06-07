@@ -1,24 +1,32 @@
 from rest_framework import serializers
-from .models import *
+from .models import Booking, Seat
+from django.contrib.auth import get_user_model
 
-
+User = get_user_model()
 
 class SeatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seat
         fields = '__all__'
 
-
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
-        fields = '__all__'
+        fields = ['name', 'email', 'date', 'seat']
 
-from rest_framework import serializers
-from django.contrib.auth import get_user_model
+    def validate(self, data):
+        if not self.context['request'].user.is_authenticated:
+            raise serializers.ValidationError("Authentication required")
+        
+        request = self.context.get('request')
 
-User = get_user_model()
-
+        if request:
+            data['user'] = request.user
+        seat = data.get('seat')
+        date = data.get('date')
+        if Booking.objects.filter(date=date, seat=seat).exists():
+            raise serializers.ValidationError("This seat is already booked for the selected date.")
+        return data
 class UserSignupSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=True)
 
@@ -35,7 +43,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        user = User(
+        user = User.objects.create(
             username=validated_data['username'],
             email=validated_data['email']
         )
@@ -64,4 +72,3 @@ class UserLoginSerializer(serializers.Serializer):
 
         data['user'] = user
         return data
-    

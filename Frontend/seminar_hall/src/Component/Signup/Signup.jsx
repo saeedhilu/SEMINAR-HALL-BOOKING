@@ -17,10 +17,6 @@ const Signup = () => {
         
         try {
             const response = await instance.post('signup/', formData);
-            {console.log('====================================');
-            console.log(formData);
-            console.log('====================================');}
-            
             if (response.status === 201) {
                 navigate('/login');
             }
@@ -34,7 +30,7 @@ const Signup = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <form onSubmit={handleSubmit} className="signup-form">
             <h1 className="text-2xl font-bold mb-6 text-center">Sign Up</h1>
             {error && <p className="text-red-500 text-center mb-4">{error}</p>}
             <div className="mb-4">
@@ -87,7 +83,7 @@ const Signup = () => {
             </div>
             <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Sign Up</button>
             <div className="text-center mt-4">
-                <button onClick={() => navigate('/login')} className="bg-white text-blue-500 px-4 py-2 rounded-full mr-2">Sign In</button>
+                <button type="button" onClick={() => navigate('/login')} className="bg-white text-blue-500 px-4 py-2 rounded-full mr-2">Sign In</button>
             </div>
         </form>
     );

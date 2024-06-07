@@ -1,26 +1,35 @@
-import React, { useState } from 'react';
-import instance from './Axios';
+import React, { useState } from "react";
+import instance from "./Axios";
 
 const BookingForm = ({ seat, onSubmit }) => {
-  const [formData, setFormData] = useState({ name: '', email: '', date: '', seat_id: seat.id });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    date: "",
+    seat: seat.id,
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+  
 
+  {console.log('frm ',formData);}
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await instance.post('booking/', formData);
-      onSubmit(response.data);
+      const response = await instance.post("bookings/", formData);
+      
+      onSubmit(response.data); 
     } catch (error) {
-      console.error('Error booking seat:', error);
+      console.error("Error booking seat is :", error);
+      
     }
   };
 
   return (
-    <form className="booking-form p-4 border rounded mt-4" onSubmit={handleSubmit}>
+    <form className="booking-form" onSubmit={handleSubmit}>
       <h3 className="text-xl mb-4">Booking Seat {seat.seat_number}</h3>
       <div className="mb-2">
         <input
