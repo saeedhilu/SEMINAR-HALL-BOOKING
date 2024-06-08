@@ -27,6 +27,11 @@ class BookingSerializer(serializers.ModelSerializer):
         if Booking.objects.filter(date=date, seat=seat).exists():
             raise serializers.ValidationError("This seat is already booked for the selected date.")
         return data
+from rest_framework import serializers
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
 class UserSignupSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=True)
 
@@ -43,7 +48,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        user = User.objects.create(
+        user = User(
             username=validated_data['username'],
             email=validated_data['email']
         )
@@ -72,3 +77,4 @@ class UserLoginSerializer(serializers.Serializer):
 
         data['user'] = user
         return data
+    

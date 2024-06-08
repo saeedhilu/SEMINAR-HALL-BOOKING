@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import instance from "./Axios";
 
 const BookingForm = ({ seat, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -17,14 +16,17 @@ const BookingForm = ({ seat, onSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await onSubmit(formData); // Pass formData to onSubmit function
+      await onSubmit(formData);
     } catch (error) {
       console.error("Error booking seat:", error);
     }
   };
 
   return (
-    <form className="booking-form" onSubmit={handleSubmit}>
+    <form
+      className="booking-form p-4 bg-white rounded shadow-md"
+      onSubmit={handleSubmit}
+    >
       <h3 className="text-xl mb-4">Booking Seat {seat.seat_number}</h3>
       <div className="mb-2">
         <input
@@ -58,7 +60,10 @@ const BookingForm = ({ seat, onSubmit }) => {
           required
         />
       </div>
-      <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+      <button
+        type="submit"
+        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+      >
         Book Seat
       </button>
     </form>

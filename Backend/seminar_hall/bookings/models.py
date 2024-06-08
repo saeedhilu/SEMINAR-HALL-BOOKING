@@ -1,12 +1,24 @@
+# models.py
+
 from django.db import models
-from django.contrib.auth.models import User 
+from django.contrib.auth.models import User
+from datetime import date
 
 class Seat(models.Model):
     seat_number = models.CharField(max_length=10, unique=True)
-    is_booked = models.BooleanField(default=False)
-    
+
     def __str__(self):
         return self.seat_number
+
+    def is_booked_on_date(self, selected_date):
+        return self.booking_set.filter(date=selected_date).exists()
+
+    def update_booked_status(self, selected_date):
+        if self.is_booked_on_date(selected_date):
+            self.is_booked = True
+        else:
+            self.is_booked = False
+        self.save()
 
 class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  
