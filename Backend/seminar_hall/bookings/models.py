@@ -16,4 +16,4 @@ class Booking(models.Model):
     seat = models.ForeignKey(Seat, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.date) 
+        return str(self.date)

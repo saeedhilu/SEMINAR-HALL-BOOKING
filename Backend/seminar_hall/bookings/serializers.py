@@ -22,7 +22,7 @@ class BookingSerializer(serializers.ModelSerializer):
 
         if request:
             data['user'] = request.user
-        seat = data.get('seat')
+        seat = data.get('seat') 
         date = data.get('date')
         if Booking.objects.filter(date=date, seat=seat).exists():
             raise serializers.ValidationError("This seat is already booked for the selected date.")

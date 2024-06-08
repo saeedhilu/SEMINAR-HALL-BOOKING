@@ -13,18 +13,13 @@ const BookingForm = ({ seat, onSubmit }) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-  
 
-  {console.log('frm ',formData);}
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await instance.post("bookings/", formData);
-      
-      onSubmit(response.data); 
+      await onSubmit(formData); // Pass formData to onSubmit function
     } catch (error) {
-      console.error("Error booking seat is :", error);
-      
+      console.error("Error booking seat:", error);
     }
   };
 
